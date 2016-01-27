@@ -1,5 +1,3 @@
-
-
  <!-- index.html -->
 <!DOCTYPE html>
 <html>
@@ -17,7 +15,12 @@
     <div id="content"></div>
 
  <script type="text/babel">
- 
+  var data=[ 
+            {PersonName:"hussein",PersonComment:"it is good" },
+            {PersonName:"Ahmed",PersonComment:"it is bad"},
+            {PersonName:"mohammed",PersonComment:"it is good" },
+            {PersonName:"salam",PersonComment:"it is so so" }
+            ];
   var Comment= React.createClass({
    render:function() {
      return(
@@ -36,24 +39,31 @@
                    <h3> welcome to first react app, we will helps you to start
                    doing react app easy and professonal way, </h3>
                    <img src="images/react.png" className="imgD"  />
-                   <Comment PersonComment="it is good" 
-                PersonName="hussein" >  </Comment>
-                     <Comment PersonComment="it is bad" 
-                PersonName="ahmed" >  </Comment>
-                    <Comment PersonComment="it is so so" 
-                PersonName="wael" >  </Comment>
-                    <Comment PersonComment="it is bad" 
-                PersonName="salam" >  </Comment>
+                   <CommentList  data={this.props.data} />
              </div>
            );
                     }
                   });
   
 
- 
+var CommentList = React.createClass({
+  render: function() {
+    var commentNodes = this.props.data.map(function(comment) {
+      return (
+                <Comment PersonComment={comment.PersonName} 
+                PersonName={comment.PersonComment} >  </Comment>
+             ); });
+
+    return (
+            <div  >
+              {commentNodes}
+            </div>
+           );
+                  }
+                });
 
 
-ReactDOM.render(<Post  />, document.getElementById('content'));
+ReactDOM.render(<Post data={data}/>, document.getElementById('content'));
 
 
  </script>
