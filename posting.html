@@ -4,6 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <title>React Tutorial</title>
+    <!-- bootstrap -->
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+     <!-- React -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
@@ -15,19 +21,21 @@
     <div id="content"></div>
 
  <script type="text/babel">
-  var data=[ 
-            {id:1,PersonName:"hussein",PersonComment:"it is good",DateComment:"2016-01-27T05:00:35.000Z" },
-            {id:2,PersonName:"Ahmed",PersonComment:"it is bad",DateComment:"2016-01-27T05:00:35.000Z" },
-            {id:3,PersonName:"mohammed",PersonComment:"it is good",DateComment:"2016-01-27T05:00:35.000Z"  },
-            {id:4,PersonName:"salam",PersonComment:"it is so so" ,DateComment:"2016-01-27T05:00:35.000Z" }
-            ];
+  var data=[];
   var Comment= React.createClass({
    render:function() {
      return(
-             <div >
-               <h5> { this.props.PersonName} :{ this.props.PersonComment} </h5>
-               {this.props.children}
-             </div>
+       <div className="panel panel-default">
+          <div className="panel-body">
+            
+            <h5>
+            { this.props.PersonComment}: {this.props.PersonName} 
+           
+            </h5>
+             
+          </div>
+     </div>
+             
            );
                     }
                   });
@@ -35,10 +43,10 @@
   var Post= React.createClass({
    render:function() {
      return(
-             <div  className="PostBody" >
+             <div  className="PostBody container" >
                    <h3> welcome to first react app, we will helps you to start
                    doing react app easy and professonal way, </h3>
-                   <img src="images/react.png" className="imgD"  />
+                   <img src="images/react.png" className="imgD img-thumbnail"  />
                    <CommentList  data={this.props.data} />
              </div>
            );
@@ -58,7 +66,7 @@ var CommentList = React.createClass({
             <div  >
               {commentNodes}
               
-    
+              <CommentForm/>
             </div>
            );
                   }
@@ -71,7 +79,7 @@ var UsersComments = React.createClass({
   },
   componentDidMount: function() {
     $.ajax({
-      url: this.props.url,
+      url: this.props.url  ,
       dataType: 'json',
       cache: false,
       success: function(data) {
@@ -91,8 +99,45 @@ var UsersComments = React.createClass({
   }
 });
 
- 
-       
+// post to server
+ var CommentForm = React.createClass({
+       getInitialState: function(){
+       return({name:"",comment:"",text:""});
+       },
+       NameChange:function(e){
+        this.setState({name:e.target.value});
+       },
+        CommentChange:function(e){
+        this.setState({comment:e.target.value});
+       },
+       PostToserver:function(){
+        // from here we post to server
+        //this.setState({text:this.state.name});
+        $.ajax({
+      url:  'http://127.0.0.1:3000/add?PersonName='+ this.state.name+'&PersonComment='+ this.state.comment,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+       },
+      render: function() {
+        return (
+         <form onSubmit={this.PostToserver} className="alert alert-info">
+          <input type="text" className='form-control' value={this.state.name} onChange={this.NameChange}/>
+          <br/>
+          <textarea type="text" rows="5" className='form-control' value={this.state.comment} onChange={this.CommentChange}/>
+            <br/>
+          <input type="submit"   className='btn btn-primary' value="post"/>
+           
+         </form>
+        );
+      }
+    });
 
 ReactDOM.render(<UsersComments url='http://127.0.0.1:3000/Comments'/>, document.getElementById('content'));
 

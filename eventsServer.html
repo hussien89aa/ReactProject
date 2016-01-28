@@ -34,7 +34,17 @@
        PostToserver:function(){
         // from here we post to server
         //this.setState({text:this.state.name});
-        
+         $.ajax({
+      url: 'http://127.0.0.1:3000/add?PersonName='+ this.state.name+'&PersonComment='+ this.state.comment,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
        },
       render: function() {
         return (
